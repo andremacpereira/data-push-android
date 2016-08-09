@@ -20,6 +20,7 @@ import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.media.RingtoneManager;
 import android.net.Uri;
 import android.support.v4.app.NotificationCompat;
@@ -27,6 +28,8 @@ import android.util.Log;
 
 import com.google.firebase.messaging.FirebaseMessagingService;
 import com.google.firebase.messaging.RemoteMessage;
+
+import static andre.com.datapushandroid.MainActivity.MY_PREFS_NAME;
 
 
 public class FCMService extends FirebaseMessagingService {
@@ -57,27 +60,34 @@ public class FCMService extends FirebaseMessagingService {
         // Not getting messages here? See why this may be: https://goo.gl/39bRNJ
         Log.d(TAG, "From: " + remoteMessage.getFrom());
 
+        Intent intent = new Intent();
+        intent.setAction(MY_ACTION);
+        intent.putExtra("MessageId", remoteMessage.getMessageId());
+
         // Check if message contains a data payload.
-        if (remoteMessage.getData().size() > 0) {
-            Log.d(TAG, "Message data payload: " + remoteMessage.getData());
+        if (remoteMessage.getData() != null) {
+
+            intent.putExtra("Body", remoteMessage.getData().get("body"));
+
+            // Check if application is not visible to the user
+            if (!ApplicationState.isActivityVisible()) {
+
+                sendNotification(remoteMessage.getData().get("body"));
+
+            }else
+            {
+                sendBroadcast(intent);
+            }
+
+            // Store Last Message Id and Body
+            SharedPreferences.Editor editor = getSharedPreferences(MY_PREFS_NAME, MODE_PRIVATE).edit();
+            editor.putString("MessageId", remoteMessage.getMessageId());
+            editor.putString("Body", remoteMessage.getData().get("body"));
+            editor.apply();
+
+
         }
 
-        // Check if message contains a notification payload.
-        if (remoteMessage.getNotification() != null) {
-            Log.d(TAG, "Message Notification Body: " + remoteMessage.getNotification().getBody());
-
-            Intent intent = new Intent();
-            intent.setAction(MY_ACTION);
-
-            intent.putExtra("MessageId", remoteMessage.getMessageId());
-            intent.putExtra("Body", remoteMessage.getNotification().getBody());
-
-            sendBroadcast(intent);
-
-        }
-
-        // Also if you intend on generating your own notifications as a result of a received FCM
-        // message, here is where that should be initiated. See sendNotification method below.
     }
     // [END receive_message]
 
