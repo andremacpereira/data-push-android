@@ -1,3 +1,5 @@
 <resources>
-    <string name="app_name">DataPushAndroid</string>
+<string name="app_name">DataPushAndroid</string>
+<string name="log_token">Gerar Token</string>
+<string name="msg_token_fmt" translatable="false">InstanceID Token: %s</string>
 </resources>
