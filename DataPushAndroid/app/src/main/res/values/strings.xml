@@ -1,5 +1,6 @@
 <resources>
-<string name="app_name">DataPushAndroid</string>
-<string name="log_token">Gerar Token</string>
-<string name="msg_token_fmt" translatable="false">InstanceID Token: %s</string>
+<string name="app_name">Data Push</string>
+<string name="log_token">Firebase Token</string>
+<string name="log_last_message">Exibir Ultimo Push</string>
+<string name="msg_token_fmt" translatable="false">Token: %s</string>
 </resources>

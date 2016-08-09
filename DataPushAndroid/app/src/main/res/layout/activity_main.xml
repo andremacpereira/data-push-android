@@ -9,6 +9,12 @@
     android:paddingTop="@dimen/activity_vertical_margin"
     tools:context="andre.com.datapushandroid.MainActivity">
 
+    <ImageView
+        android:id="@+id/imgNotification"
+        android:layout_width="@dimen/standard_field_width"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:src="@drawable/ic_message"/>
 
     <Button
         android:id="@+id/logTokenButton"
@@ -16,5 +22,12 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
         android:text="@string/log_token" />
+
+    <Button
+        android:id="@+id/logLastMessageButton"
+        android:layout_width="@dimen/standard_field_width"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:text="@string/log_last_message" />
 
 </LinearLayout>

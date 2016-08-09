@@ -33,6 +33,7 @@ public class FCMService extends FirebaseMessagingService {
 
 
     private static final String TAG = "FCMService";
+    final static String MY_ACTION = "SAVE_PUSH_NOTIFICATION";
 
     /**
      * Called when message is received.
@@ -64,6 +65,15 @@ public class FCMService extends FirebaseMessagingService {
         // Check if message contains a notification payload.
         if (remoteMessage.getNotification() != null) {
             Log.d(TAG, "Message Notification Body: " + remoteMessage.getNotification().getBody());
+
+            Intent intent = new Intent();
+            intent.setAction(MY_ACTION);
+
+            intent.putExtra("MessageId", remoteMessage.getMessageId());
+            intent.putExtra("Body", remoteMessage.getNotification().getBody());
+
+            sendBroadcast(intent);
+
         }
 
         // Also if you intend on generating your own notifications as a result of a received FCM
