@@ -27,23 +27,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        // If a notification message is tapped, any data accompanying the notification
-        // message is available in the intent extras. In this sample the launcher
-        // intent is fired when the notification is tapped, so any accompanying data would
-        // be handled here. If you want a different intent fired, set the click_action
-        // field of the notification message to the desired intent. The launcher intent
-        // is used when no click_action is specified.
-        //
-        // Handle possible data accompanying notification message.
-        // [START handle_data_extras]
-        if (getIntent().getExtras() != null) {
-            for (String key : getIntent().getExtras().keySet()) {
-                String value = getIntent().getExtras().getString(key);
-                Log.d(TAG, "Key: " + key + " Value: " + value);
-            }
-        }
-        // [END handle_data_extras]
-
         // Declare Button references
         Button logLastMessageButton = (Button) findViewById(R.id.logLastMessageButton);
         Button logTokenButton = (Button) findViewById(R.id.logTokenButton);
@@ -55,8 +38,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         // Display Push Notification
         showLastReceivedMessage();
     }
-
-
 
     @Override
     protected void onStart() {
@@ -72,7 +53,17 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         super.onStart();
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+        ApplicationState.activityResumed();
+    }
 
+    @Override
+    protected void onPause() {
+        super.onPause();
+        ApplicationState.activityPaused();
+    }
 
     @Override
     protected void onStop() {
@@ -95,6 +86,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 String msg = getString(R.string.msg_token_fmt, token);
                 Log.d(TAG, msg);
 
+                // If application fails to get token it will write 'null' as a string
                 if (msg.length() > 5) {
                     Toast.makeText(MainActivity.this, msg, Toast.LENGTH_SHORT).show();
                 }else
@@ -124,15 +116,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             String MessageId = arg1.getStringExtra("MessageId");
             String Body = arg1.getStringExtra("Body");
 
-            SharedPreferences.Editor editor = getSharedPreferences(MY_PREFS_NAME, MODE_PRIVATE).edit();
-            editor.putString("MessageId", MessageId);
-            editor.putString("Body", Body);
-            editor.apply();
-
             Toast.makeText(MainActivity.this,
                     "Notificação Recebida!\n"
-                            + "Id da Mensagem: " + String.valueOf(MessageId)
-                            + "\nTexto: " + String.valueOf(Body),
+                            + "Push Id: " + String.valueOf(MessageId)
+                            + "\nMensagem: " + String.valueOf(Body),
                     Toast.LENGTH_LONG).show();
 
         }
@@ -148,7 +135,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         if ((restoredText != null) && (restoredId != null)) {
 
             Toast.makeText(MainActivity.this,
-                            "Push Id: " + String.valueOf(restoredId)
+                    "Push Id: " + String.valueOf(restoredId)
                             + "\n\nMensagem: " + String.valueOf(restoredText),
                     Toast.LENGTH_LONG).show();
 
@@ -156,8 +143,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         else
         {
             Toast.makeText(MainActivity.this,
-                "Nenhum Push Registrado!",
-                Toast.LENGTH_LONG).show();
+                    "Nenhum Push Registrado!",
+                    Toast.LENGTH_LONG).show();
         }
     }
 }
