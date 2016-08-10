@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package andre.com.datapushandroid;
+package andre.com.datapushandroid.services;
 
 import android.app.NotificationManager;
 import android.app.PendingIntent;
@@ -29,14 +29,22 @@ import android.util.Log;
 import com.google.firebase.messaging.FirebaseMessagingService;
 import com.google.firebase.messaging.RemoteMessage;
 
+import andre.com.datapushandroid.ApplicationState;
+import andre.com.datapushandroid.MainActivity;
+import andre.com.datapushandroid.R;
+import andre.com.datapushandroid.interfaces.EncryptionResponseInterface;
+import andre.com.datapushandroid.tasks.EncryptionOperation;
+
 import static andre.com.datapushandroid.MainActivity.MY_PREFS_NAME;
 
 
-public class FCMService extends FirebaseMessagingService {
+public class FCMService extends FirebaseMessagingService implements EncryptionResponseInterface {
 
 
     private static final String TAG = "FCMService";
-    final static String MY_ACTION = "SAVE_PUSH_NOTIFICATION";
+    public final static String MY_ACTION = "SAVE_PUSH_NOTIFICATION";
+
+    String push_id = "";
 
     /**
      * Called when message is received.
@@ -60,14 +68,21 @@ public class FCMService extends FirebaseMessagingService {
         // Not getting messages here? See why this may be: https://goo.gl/39bRNJ
         Log.d(TAG, "From: " + remoteMessage.getFrom());
 
+        push_id = remoteMessage.getMessageId();
+
         Intent intent = new Intent();
         intent.setAction(MY_ACTION);
-        intent.putExtra("MessageId", remoteMessage.getMessageId());
+        intent.putExtra("MessageId", push_id);
 
         // Check if message contains a data payload.
         if (remoteMessage.getData() != null) {
 
-            intent.putExtra("Body", remoteMessage.getData().get("body"));
+            String body = remoteMessage.getData().get("body");
+
+            intent.putExtra("Body", body);
+
+            EncryptionOperation task = new EncryptionOperation();
+            task.HashString(body, this);
 
             // Check if application is not visible to the user
             if (!ApplicationState.isActivityVisible()) {
@@ -78,13 +93,6 @@ public class FCMService extends FirebaseMessagingService {
             {
                 sendBroadcast(intent);
             }
-
-            // Store Last Message Id and Body
-            SharedPreferences.Editor editor = getSharedPreferences(MY_PREFS_NAME, MODE_PRIVATE).edit();
-
-            editor.putString("MessageId", remoteMessage.getMessageId());
-            editor.putString("Body", remoteMessage.getData().get("body"));
-            editor.apply();
 
 
         }
@@ -116,5 +124,26 @@ public class FCMService extends FirebaseMessagingService {
                 (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
 
         notificationManager.notify(0 /* ID of notification */, notificationBuilder.build());
+    }
+
+    @Override
+    public void encrypted_push(String responseStr) {
+
+        Log.i("Push Criptografado: ", responseStr);
+
+        // Store Last Message Id and Body
+        SharedPreferences.Editor editor = getSharedPreferences(MY_PREFS_NAME, MODE_PRIVATE).edit();
+
+        editor.putString("MessageId", push_id);
+        editor.putString("Body", responseStr);
+        editor.apply();
+
+    }
+
+    @Override
+    public void decrypted_push(String responseStr) {
+
+        Log.i("Push Descriptografado: ", responseStr);
+
     }
 }

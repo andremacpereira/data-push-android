@@ -30,18 +30,4 @@
         android:layout_gravity="center_horizontal"
         android:text="@string/log_last_message" />
 
-    <Button
-        android:id="@+id/logEncryptButton"
-        android:layout_width="@dimen/standard_field_width"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center_horizontal"
-        android:text="Criptografar" />
-
-    <Button
-        android:id="@+id/logDecryptButton"
-        android:layout_width="@dimen/standard_field_width"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center_horizontal"
-        android:text="Descriptografar" />
-
 </LinearLayout>

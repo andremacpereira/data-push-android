@@ -16,12 +16,14 @@ import com.google.firebase.iid.FirebaseInstanceId;
 
 import andre.com.datapushandroid.tasks.EncryptionOperation;
 import andre.com.datapushandroid.interfaces.EncryptionResponseInterface;
+import andre.com.datapushandroid.services.FCMService;
 
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener, EncryptionResponseInterface {
 
-    private static final String TAG = "MainActivity";
     public static final String MY_PREFS_NAME = "PushData";
+
+    private String restoredId = "";
 
     MyReceiver myReceiver;
 
@@ -33,14 +35,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         // Declare Button references
         Button logLastMessageButton = (Button) findViewById(R.id.logLastMessageButton);
         Button logTokenButton = (Button) findViewById(R.id.logTokenButton);
-        Button logEncryptButton = (Button) findViewById(R.id.logEncryptButton);
-        Button logDecryptButton = (Button) findViewById(R.id.logDecryptButton);
 
         // Set respective ClickListeners
         logLastMessageButton.setOnClickListener(this);
         logTokenButton.setOnClickListener(this);
-        logEncryptButton.setOnClickListener(this);
-        logDecryptButton.setOnClickListener(this);
 
         // Display Push Notification
         showLastReceivedMessage();
@@ -89,13 +87,12 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 // Get token
                 String token = FirebaseInstanceId.getInstance().getToken();
 
-                // Log and toast
-                String msg = getString(R.string.msg_token_fmt, token);
-                Log.d(TAG, msg);
+                // Log
+                Log.i("YOUR_DEVICE_TOKEN = ", token);
 
                 // If application fails to get token it will write 'null' as a string
-                if (msg.length() > 5) {
-                    Toast.makeText(MainActivity.this, msg, Toast.LENGTH_SHORT).show();
+                if (token.length() > 5) {
+                    Toast.makeText(MainActivity.this, "Token = "+token, Toast.LENGTH_SHORT).show();
                 }else
                 {
                     Toast.makeText(MainActivity.this, "Não foi possível gerar o token.", Toast.LENGTH_SHORT).show();
@@ -105,27 +102,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
             case R.id.logLastMessageButton:
             {
-
                 // Display Last Received Push Notification
                 showLastReceivedMessage();
-
-            } break;
-
-            case R.id.logEncryptButton:
-            {
-
-                EncryptionOperation task = new EncryptionOperation();
-
-                task.HashString("#$%exemplo de criptografia*&¨@", this);
-
-            } break;
-
-            case R.id.logDecryptButton:
-            {
-
-                EncryptionOperation task = new EncryptionOperation();
-
-                task.DeHashString("1NYImv9WIZwUR1SSMixULuWSELp3nZxT3Fm2tUro9HU=", this);
 
             } break;
 
@@ -141,6 +119,12 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     @Override
     public void decrypted_push(String response) {
         Log.i("Push Descriptografado: ", response);
+
+
+        Toast.makeText(MainActivity.this,
+                "Push Id: " + String.valueOf(restoredId)
+                + "\n\nMensagem: " + String.valueOf(response),
+                Toast.LENGTH_LONG).show();
     }
 
 
@@ -154,11 +138,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             String MessageId = arg1.getStringExtra("MessageId");
             String Body = arg1.getStringExtra("Body");
 
-            Toast.makeText(MainActivity.this,
-                    "Notificação Recebida!\n"
-                            + "Push Id: " + String.valueOf(MessageId)
-                            + "\nMensagem: " + String.valueOf(Body),
-                    Toast.LENGTH_LONG).show();
+            Toast.makeText(MainActivity.this, "Notificação Recebida!\n"
+            + "Push Id: " + String.valueOf(MessageId)
+            + "\nMensagem: " + String.valueOf(Body),
+            Toast.LENGTH_LONG).show();
 
         }
 
@@ -167,22 +150,20 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     public void showLastReceivedMessage()
     {
         SharedPreferences prefs = getSharedPreferences(MY_PREFS_NAME, MODE_PRIVATE);
-        String restoredId = prefs.getString("MessageId", null);
+
+        restoredId = prefs.getString("MessageId", null);
         String restoredText = prefs.getString("Body", null);
 
         if ((restoredText != null) && (restoredId != null)) {
 
-            Toast.makeText(MainActivity.this,
-                    "Push Id: " + String.valueOf(restoredId)
-                            + "\n\nMensagem: " + String.valueOf(restoredText),
-                    Toast.LENGTH_LONG).show();
+
+            EncryptionOperation task = new EncryptionOperation();
+            task.DeHashString(String.valueOf(restoredText), this);
 
         }
         else
         {
-            Toast.makeText(MainActivity.this,
-                    "Nenhum Push Registrado!",
-                    Toast.LENGTH_LONG).show();
+            Toast.makeText(MainActivity.this, "Nenhum Push Registrado!", Toast.LENGTH_LONG).show();
         }
     }
 }
