@@ -15,7 +15,6 @@
  */
 
 package andre.com.datapushandroid.services;
-
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Context;
@@ -44,7 +43,7 @@ public class FCMService extends FirebaseMessagingService implements EncryptionRe
     private static final String TAG = "FCMService";
     public final static String MY_ACTION = "SAVE_PUSH_NOTIFICATION";
 
-    String push_id = "";
+    private String push_id = "";
 
     /**
      * Called when message is received.
@@ -65,10 +64,22 @@ public class FCMService extends FirebaseMessagingService implements EncryptionRe
         // [END_EXCLUDE]
 
         // TODO(developer): Handle FCM messages here.
-        // Not getting messages here? See why this may be: https://goo.gl/39bRNJ
+
+        // Getting MessageId will return null for a majority of devices (not all of them).
+        // This is a bug in Firebase and it will be fixed on 9.4+
+        // You can check it at
+        //
+        // http://stackoverflow.com/questions/38007894/fcm-android-null-message-id
+        //
+
+        // push_id = remoteMessage.getMessageId();
+
+        // I'm now changing the id to the sender of this message which also has an unique ID.
+
+        push_id = remoteMessage.getFrom();
         Log.d(TAG, "From: " + remoteMessage.getFrom());
 
-        push_id = remoteMessage.getMessageId();
+        //Log.d(TAG, "Id: " + remoteMessage.getMessageId());
 
         Intent intent = new Intent();
         intent.setAction(MY_ACTION);

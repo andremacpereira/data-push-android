@@ -122,7 +122,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
 
         Toast.makeText(MainActivity.this,
-                "Push Id: " + String.valueOf(restoredId)
+                "Push From: " + String.valueOf(restoredId)
                 + "\n\nMensagem: " + String.valueOf(response),
                 Toast.LENGTH_LONG).show();
     }
