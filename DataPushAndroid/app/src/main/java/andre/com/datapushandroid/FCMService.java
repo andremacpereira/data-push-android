@@ -81,6 +81,7 @@ public class FCMService extends FirebaseMessagingService {
 
             // Store Last Message Id and Body
             SharedPreferences.Editor editor = getSharedPreferences(MY_PREFS_NAME, MODE_PRIVATE).edit();
+
             editor.putString("MessageId", remoteMessage.getMessageId());
             editor.putString("Body", remoteMessage.getData().get("body"));
             editor.apply();
