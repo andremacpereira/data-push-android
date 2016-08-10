@@ -14,8 +14,11 @@ import android.widget.Button;
 
 import com.google.firebase.iid.FirebaseInstanceId;
 
+import andre.com.datapushandroid.tasks.EncryptionOperation;
+import andre.com.datapushandroid.interfaces.EncryptionResponseInterface;
 
-public class MainActivity extends AppCompatActivity implements View.OnClickListener {
+
+public class MainActivity extends AppCompatActivity implements View.OnClickListener, EncryptionResponseInterface {
 
     private static final String TAG = "MainActivity";
     public static final String MY_PREFS_NAME = "PushData";
@@ -30,10 +33,14 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         // Declare Button references
         Button logLastMessageButton = (Button) findViewById(R.id.logLastMessageButton);
         Button logTokenButton = (Button) findViewById(R.id.logTokenButton);
+        Button logEncryptButton = (Button) findViewById(R.id.logEncryptButton);
+        Button logDecryptButton = (Button) findViewById(R.id.logDecryptButton);
 
         // Set respective ClickListeners
         logLastMessageButton.setOnClickListener(this);
         logTokenButton.setOnClickListener(this);
+        logEncryptButton.setOnClickListener(this);
+        logDecryptButton.setOnClickListener(this);
 
         // Display Push Notification
         showLastReceivedMessage();
@@ -103,9 +110,40 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 showLastReceivedMessage();
 
             } break;
+
+            case R.id.logEncryptButton:
+            {
+
+                EncryptionOperation task = new EncryptionOperation();
+
+                task.HashString("#$%exemplo de criptografia*&¨@", this);
+
+            } break;
+
+            case R.id.logDecryptButton:
+            {
+
+                EncryptionOperation task = new EncryptionOperation();
+
+                task.DeHashString("1NYImv9WIZwUR1SSMixULuWSELp3nZxT3Fm2tUro9HU=", this);
+
+            } break;
+
         }
 
     }
+
+    @Override
+    public void encrypted_push(String response) {
+        Log.i("Push Criptografado: ", response);
+    }
+
+    @Override
+    public void decrypted_push(String response) {
+        Log.i("Push Descriptografado: ", response);
+    }
+
+
 
     private class MyReceiver extends BroadcastReceiver {
 
