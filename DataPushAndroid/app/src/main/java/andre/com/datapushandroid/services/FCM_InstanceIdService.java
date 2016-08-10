@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-package andre.com.datapushandroid;
+package andre.com.datapushandroid.services;
 
 import android.util.Log;
 import com.google.firebase.iid.FirebaseInstanceId;
