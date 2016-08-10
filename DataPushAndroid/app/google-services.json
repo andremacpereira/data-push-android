@@ -1,0 +1,42 @@
+{
+  "project_info": {
+    "project_number": "705386516505",
+    "firebase_url": "https://data-push-1e020.firebaseio.com",
+    "project_id": "data-push-1e020",
+    "storage_bucket": "data-push-1e020.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:705386516505:android:dcf7af2a56df384e",
+        "android_client_info": {
+          "package_name": "andre.com.datapushandroid"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "705386516505-32hq3656a2jf04kreokjjjh86tscvkla.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAj1vQPl22ArmSfKcEYx2A6ssk1IzhJ1x4"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
